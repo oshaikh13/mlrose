@@ -57,10 +57,12 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Fal
     best_state = None
 
     if curve:
-        fitness_curve = np.array([])
+        fitness_curve = []
 
 
     for _ in range(restarts + 1):
+        if curve:
+            fitness_curve.append([])
         # Initialize optimization problem
         if init_state is None:
             problem.reset()
@@ -89,7 +91,7 @@ def hill_climb(problem, max_iters=np.inf, restarts=0, init_state=None, curve=Fal
             best_fitness = problem.get_fitness()
             best_state = problem.get_state()
         if curve:
-            fitness_curve = np.append(fitness_curve, problem.get_fitness())
+            fitness_curve[_].append(problem.get_fitness())
 
     best_fitness = problem.get_maximize()*best_fitness
     if curve:
@@ -154,9 +156,13 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
     best_state = None
 
     if curve:
-        fitness_curve = np.array([])
+        fitness_curve = []
 
     for _ in range(restarts + 1):
+
+        if curve:
+            fitness_curve.append([])
+
         # Initialize optimization problem and attempts counter
         if init_state is None:
             problem.reset()
@@ -183,7 +189,7 @@ def random_hill_climb(problem, max_attempts=10, max_iters=np.inf, restarts=0,
                 attempts += 1
 
             if curve:
-                fitness_curve = np.append(fitness_curve, problem.get_fitness())
+                fitness_curve[_].append(problem.get_fitness())
 
         # Update best state and best fitness
         if problem.get_fitness() > best_fitness:
