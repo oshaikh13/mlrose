@@ -4,7 +4,7 @@
 # License: BSD 3 clause
 
 import numpy as np
-
+from functools import reduce
 
 class OneMax:
     """Fitness function for One Max optimization problem. Evaluates the
@@ -64,6 +64,117 @@ class OneMax:
         """
         return self.prob_type
 
+
+class ParitySum:
+    def __init__(self, parity_bonus):
+        self.prob_type = 'discrete'
+        self.parity_bonus = parity_bonus
+    
+    def evaluate(self, state):
+        """Evaluate the fitness of a state vector.
+
+        Parameters
+        ----------
+        state: array
+            State array for evaluation.
+
+        Returns
+        -------
+        fitness: float
+            Value of fitness function.
+        """
+
+        fitness = sum(state)
+        if fitness % 2 == 0:
+            fitness += self.parity_bonus
+
+        return fitness
+
+    def get_prob_type(self):
+        """ Return the problem type.
+
+        Returns
+        -------
+        self.prob_type: string
+            Specifies problem type as 'discrete', 'continuous', 'tsp'
+            or 'either'.
+        """
+        return self.prob_type
+
+class ConsecutiveOneProductSum:
+    def __init__(self):
+        self.prob_type = 'discrete'
+    
+    def evaluate(self, state):
+        """Evaluate the fitness of a state vector.
+
+        Parameters
+        ----------
+        state: array
+            State array for evaluation.
+
+        Returns
+        -------
+        fitness: float
+            Value of fitness function.
+        """
+
+        consectiveCounts = []        
+        currentCount = 0
+        for element in state:
+            if element == 1:
+                currentCount += 1
+            elif currentCount > 0:
+                consectiveCounts.append(currentCount)
+                currentCount = 0
+
+        if currentCount > 0: consectiveCounts.append(currentCount)
+    
+        return reduce(lambda x, y: x * y, consectiveCounts)
+
+    def get_prob_type(self):
+        """ Return the problem type.
+
+        Returns
+        -------
+        self.prob_type: string
+            Specifies problem type as 'discrete', 'continuous', 'tsp'
+            or 'either'.
+        """
+        return self.prob_type
+
+class NoisyDotProduct:
+    def __init__(self, random_vector):
+        self.prob_type = 'discrete'
+        self.random_vector = random_vector
+    
+    def evaluate(self, state):
+        """Evaluate the fitness of a state vector.
+
+        Parameters
+        ----------
+        state: array
+            State array for evaluation.
+
+        Returns
+        -------
+        fitness: float
+            Value of fitness function.
+        """
+        noise = np.random.normal(loc=0.0, scale=.25, size=state.shape[0])
+        return np.dot(self.random_vector + noise, state)
+
+
+    def get_prob_type(self):
+        """ Return the problem type.
+
+        Returns
+        -------
+        self.prob_type: string
+            Specifies problem type as 'discrete', 'continuous', 'tsp'
+            or 'either'.
+        """
+        return self.prob_type    
 
 class FlipFlop:
     """Fitness function for Flip Flop optimization problem. Evaluates the
