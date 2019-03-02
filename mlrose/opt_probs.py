@@ -114,6 +114,9 @@ class OptProb:
                               / len(pop_fitness)
         else:
             self.mate_probs = pop_fitness/np.sum(pop_fitness)
+    
+        self.mate_probs *= (self.mate_probs>0) # clips negative probs
+        self.mate_probs = self.mate_probs / sum(self.mate_probs)
 
     def get_fitness(self):
         """ Return the fitness of the current state vector.

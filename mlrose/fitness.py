@@ -4,7 +4,6 @@
 # License: BSD 3 clause
 
 import numpy as np
-from functools import reduce
 
 class OneMax:
     """Fitness function for One Max optimization problem. Evaluates the
@@ -130,7 +129,10 @@ class ConsecutiveOneProductSum:
 
         if currentCount > 0: consectiveCounts.append(currentCount)
     
-        return reduce(lambda x, y: x * y, consectiveCounts)
+        result = 1
+        for x in consectiveCounts: 
+            result = result * x  
+        return result
 
     def get_prob_type(self):
         """ Return the problem type.
